@@ -39,6 +39,40 @@ variable "name" {
   type        = string
 }
 
+variable "records" {
+  description = "DNS records to create within the hosted zone"
+  type = list(object({
+    name            = string
+    type            = string
+    ttl             = optional(number)
+    records         = optional(list(string))
+    set_identifier  = optional(string)
+    health_check_id = optional(string)
+    alias = optional(object({
+      name                   = string
+      zone_id                = string
+      evaluate_target_health = optional(bool)
+    }))
+    failover_routing_policy = optional(object({
+      type = string
+    }))
+    geolocation_routing_policy = optional(object({
+      continent   = string
+      country     = string
+      subdivision = optional(string)
+    }))
+    latency_routing_policy = optional(object({
+      region = string
+    }))
+    weighted_routing_policy = optional(object({
+      weight = number
+    }))
+    multivalue_answer_routing_policy = optional(bool)
+    allow_overwrite                  = optional(bool)
+  }))
+  default = []
+}
+
 variable "tags" {
   description = "Tags to assign to the hosted zone"
   type        = map(string)

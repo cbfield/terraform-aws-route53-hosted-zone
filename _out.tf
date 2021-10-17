@@ -28,6 +28,11 @@ output "name" {
   value       = var.name
 }
 
+output "records" {
+  description = "Records created in this hosted zone"
+  value       = aws_route53_record.record
+}
+
 output "tags" {
   description = "Tags assigned to the hosted zone"
   value = merge(var.tags, {

@@ -16,4 +16,19 @@ module "my_hosted_zone" {
       vpc_region = "us-west-2"
     }
   ]
+
+  records = [
+    {
+      name = "something.example.com"
+      type = "A"
+      alias = {
+        name    = "my-alb.ec2.amazonaws.com"
+        zone_id = "SFGZXGZSGZSREFSEF"
+      }
+      failover_routing_policy = {
+        type = "PRIMARY"
+      }
+      set_identifier = "PRIMARY"
+    }
+  ]
 }

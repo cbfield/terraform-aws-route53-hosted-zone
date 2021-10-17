@@ -28,6 +28,20 @@ variable "delegation_set_id" {
   default     = null
 }
 
+variable "dnssec" {
+  description = "Configuration to enable DNSSEC for this hosted zone. If a KMS key is provided, it will be used. Otherwise, one will be created"
+  type = object({
+    enabled        = bool
+    kms_key        = optional(string)
+    signing_status = optional(string)
+  })
+  default = {
+    enabled        = false
+    kms_key        = null
+    signing_status = null
+  }
+}
+
 variable "force_destroy" {
   description = "Whether or not to forcibly delete all records in the zone when the zone is deleted"
   type        = bool

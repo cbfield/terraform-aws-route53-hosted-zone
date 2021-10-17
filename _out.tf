@@ -18,6 +18,26 @@ output "delegation_set_id" {
   value       = var.delegation_set_id
 }
 
+output "dnssec" {
+  description = "The dnssec object created by this module, if enabled"
+  value       = var.dnssec.enabled ? aws_route53_hosted_zone_dnssec.dnssec.0 : null
+}
+
+output "dnssec_key_signing_key" {
+  description = "If enabled, the key signing key for dnssec for this hosted zone"
+  value       = var.dnssec.enabled ? aws_route53_key_signing_key.dnssec.0 : null
+}
+
+output "dnssec_kms_alias" {
+  description = "The alias for the key created to implement dnssec for this hosted zone, if a key was not provided"
+  value       = !(var.dnssec.enabled && var.dnssec.kms_key == null) ? null : aws_kms_alias.dnssec.0
+}
+
+output "dnssec_kms_key" {
+  description = "The key created to implement dnssec for this hosted zone, if one was not provided"
+  value       = !(var.dnssec.enabled && var.dnssec.kms_key == null) ? null : aws_kms_key.dnssec.0
+}
+
 output "force_destroy" {
   description = "The provided value for var.force_destroy"
   value       = var.force_destroy

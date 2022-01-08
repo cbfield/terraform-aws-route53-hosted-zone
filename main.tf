@@ -27,7 +27,11 @@ resource "aws_route53_vpc_association_authorization" "auth" {
 }
 
 resource "aws_route53_record" "record" {
-  for_each = { for record in var.records : join("-", [for i in [record.name, record.set_identifier] : i if i != null]) => record }
+  for_each = {
+    for record in var.records : join("-",
+      [for i in [record.name, record.type, record.set_identifier] : i if i != null]
+    ) => record
+  }
 
   zone_id                          = aws_route53_zone.zone.id
   name                             = each.value.name
@@ -50,7 +54,9 @@ resource "aws_route53_record" "record" {
   }
 
   dynamic "failover_routing_policy" {
-    for_each = each.value.failover_routing_policy != null ? { for pol in [each.value.failover_routing_policy] : pol.type => pol } : {}
+    for_each = each.value.failover_routing_policy != null ? {
+      for pol in [each.value.failover_routing_policy] : pol.type => pol
+    } : {}
 
     content {
       type = failover_routing_policy.value.type
@@ -58,7 +64,9 @@ resource "aws_route53_record" "record" {
   }
 
   dynamic "geolocation_routing_policy" {
-    for_each = each.value.geolocation_routing_policy != null ? { for pol in [each.value.geolocation_routing_policy] : pol.continent => pol } : {}
+    for_each = each.value.geolocation_routing_policy != null ? {
+      for pol in [each.value.geolocation_routing_policy] : pol.continent => pol
+    } : {}
 
     content {
       continent   = geolocation_routing_policy.value.continent
@@ -68,7 +76,9 @@ resource "aws_route53_record" "record" {
   }
 
   dynamic "latency_routing_policy" {
-    for_each = each.value.latency_routing_policy != null ? { for pol in [each.value.latency_routing_policy] : pol.region => pol } : {}
+    for_each = each.value.latency_routing_policy != null ? {
+      for pol in [each.value.latency_routing_policy] : pol.region => pol
+    } : {}
 
     content {
       region = latency_routing_policy.value.region
@@ -76,7 +86,9 @@ resource "aws_route53_record" "record" {
   }
 
   dynamic "weighted_routing_policy" {
-    for_each = each.value.weighted_routing_policy != null ? { for pol in [each.value.weighted_routing_policy] : pol.weight => pol } : {}
+    for_each = each.value.weighted_routing_policy != null ? {
+      for pol in [each.value.weighted_routing_policy] : pol.weight => pol
+    } : {}
 
     content {
       weight = weighted_routing_policy.value.weight

@@ -1,5 +1,5 @@
 module "my_hosted_zone" {
-  source = "../"
+  source = "../../"
 
   name = "example.com"
 

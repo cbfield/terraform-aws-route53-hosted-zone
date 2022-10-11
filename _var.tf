@@ -49,8 +49,9 @@ variable "force_destroy" {
 }
 
 variable "name" {
-  description = "The name of the hosted zone"
+  description = "The name of the hosted zone. Required if not using var.use_zone"
   type        = string
+  default     = null
 }
 
 variable "records" {
@@ -91,4 +92,14 @@ variable "tags" {
   description = "Tags to assign to the hosted zone"
   type        = map(string)
   default     = {}
+}
+
+variable "use_zone" {
+  description = "Manage records within an existing hosted zone instead of creating a new one"
+  type = object({
+    name    = optional(string)
+    id      = optional(string)
+    private = optional(bool)
+  })
+  default = {}
 }

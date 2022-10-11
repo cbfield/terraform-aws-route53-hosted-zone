@@ -1,5 +1,5 @@
 resource "aws_kms_key" "dnssec" {
-  count = var.dnssec.enabled && var.dnssec.kms_key == null ? 1 : 0
+  count = local.dnssec_enabled && var.dnssec.kms_key == null ? 1 : 0
 
   customer_master_key_spec = "ECC_NIST_P256"
   deletion_window_in_days  = 7
@@ -48,23 +48,23 @@ resource "aws_kms_key" "dnssec" {
 }
 
 resource "aws_kms_alias" "dnssec" {
-  count = var.dnssec.enabled && var.dnssec.kms_key == null ? 1 : 0
+  count = local.dnssec_enabled && var.dnssec.kms_key == null ? 1 : 0
 
   name          = replace("alias/dnssec-${var.name}", ".", "-")
   target_key_id = aws_kms_key.dnssec.0.arn
 }
 
 resource "aws_route53_key_signing_key" "dnssec" {
-  count = var.dnssec.enabled ? 1 : 0
+  count = local.dnssec_enabled ? 1 : 0
 
-  hosted_zone_id             = aws_route53_zone.zone.id
+  hosted_zone_id             = aws_route53_zone.zone[0].id
   key_management_service_arn = var.dnssec.kms_key != null ? var.dnssec.kms_key : aws_kms_key.dnssec.0.arn
   name                       = var.name
 }
 
 resource "aws_route53_hosted_zone_dnssec" "dnssec" {
-  count = var.dnssec.enabled ? 1 : 0
+  count = local.dnssec_enabled ? 1 : 0
 
-  hosted_zone_id = aws_route53_zone.zone.id
+  hosted_zone_id = aws_route53_zone.zone[0].id
   signing_status = var.dnssec.signing_status
 }

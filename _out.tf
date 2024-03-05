@@ -62,5 +62,5 @@ output "tags" {
 
 output "zone" {
   description = "The hosted zone object created by the module"
-  value       = local.create_zone ? one(aws_route53_zone.zone) : null
+  value       = local.create_zone ? one(aws_route53_zone.zone) : one(data.aws_route53_zone.zone)
 }
